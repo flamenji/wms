@@ -12,10 +12,22 @@ import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import {
-    Link,useLocation
+    Link,
+    useLocation
   } from "react-router-dom";
 import { toast } from 'react-toastify';
 import LogoWMS from '../static/image/logo.svg';
+// import { useParams } from "react-router";
+
+// function useQuery() {
+//   return new URLSearchParams(useLocation().search);
+// }
+
+const queryString = require('query-string');
+
+var parsed = queryString.parse(this.props.location.search);
+console.log(parsed.param); // replace param with your own 
+
 
 const useStyles = makeStyles((theme) => ({
   '@global': {
@@ -154,6 +166,9 @@ const tiers = [
 export default function Pricing() {
   const classes = useStyles();
   const [paket, setPaket] = useState({});
+  // let params = useParams();
+  console.log(URLSearchParams(useLocation().search));
+
 
   function handleClickPackage(paket){
       setPaket(paket);
@@ -161,6 +176,8 @@ export default function Pricing() {
         position: toast.POSITION.TOP_CENTER
       });
   };
+
+
 
   return (
     <React.Fragment>
@@ -223,8 +240,8 @@ export default function Pricing() {
                         <Button className={classes.cardButton}
                                 variant="outlined"
                                 onClick={() => {
-                                          handleClickPackage({"id" : tier.id, "name" : tier.title})
-                                        }
+                                            handleClickPackage({"id" : tier.id, "name" : tier.title})
+                                          }
                                         }
                           >
                             {tier.buttonText}

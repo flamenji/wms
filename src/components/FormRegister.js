@@ -25,6 +25,8 @@ import StepContent from '@material-ui/core/StepContent';
 import Paper from '@material-ui/core/Paper';
 import {SketchField, Tools} from 'react-sketch';
 import ImageUploader from "react-images-upload";
+import queryString from 'query-string';
+
 
 
 
@@ -60,7 +62,8 @@ export default function FormRegister() {
   const [open, setOpen] = useState(false);
   const [canvas, setCanvas] = useState({
     lineWidth: 5,
-    lineColor: 'black',
+    // lineColor: 'black',
+    lineColor: 'red',
     fillColor: '#68CCCA',
     backgroundColor: 'transparent',
     shadowWidth: 0,
@@ -95,15 +98,18 @@ export default function FormRegister() {
   const [coordinate , setCoordinate ] = useState(initCoordinate);
   const [pictureIdentity, setPictureIdentity] = useState([]);
   const [pictureSelfie, setPictureSelfie] = useState([]);
+  const url = this.props.location.search;
+  const params = queryString.parse(url);
+  console.log(params);
 
   const onDropPictureIdentity = pictureIdentity => {
     setPictureIdentity([...pictureIdentity, pictureIdentity]);
-    // console.log(pictureIdentity);
+    console.log(pictureIdentity);
   };
 
   const onDropPictureSelfie = pictureSelfie => {
     setPictureSelfie([...pictureSelfie, pictureSelfie]);
-    // console.log(pictureIdentity);
+    console.log(pictureIdentity);
   };
   const handleTooltipClose = () => {
     setOpen(false);
@@ -142,22 +148,25 @@ export default function FormRegister() {
     // setInitZoom(e.target.getZoom());
   }    
 
-  function handleSubmit(e){
-    e.preventDefault();
-    const register = {
-      name,
-      email,
-      cp1,
-      cp2,
-      address,
-      latitude,
-      longitude,
-      ssid_name,
-      // filesss,
-      // signatureBase64
-    };
-    // console.log(register);
-
+  function handleSubmit(){
+    // e.preventDefault();
+    const register = new FormData() 
+    register.append('name' , name)
+    register.append('email', email)
+    register.append('cp1', cp1)
+    register.append('cp2', cp2)
+    register.append('address', address)
+    register.append('latitude', coordinate[0])
+    register.append('longitude', coordinate[1])
+    register.append('ssid_name', ssid_name)
+    register.append('signatureBase64', newCanvas.toDataURL())
+    register.append('picture_identity',pictureIdentity[0])
+    register.append('picture_selfie', pictureSelfie[0])
+    console.log(register);
+    const config = {     
+      headers: { 'content-type': 'multipart/form-data' }
+    }
+  
     axios
     .post('http://localhost:5000/register', register)
     .then(resp => {
@@ -167,7 +176,8 @@ export default function FormRegister() {
         cogoToast.success("BERHASIL INPUT dengan ID : " + resp.data.id);
       }
       else{
-        cogoToast.warning("GAGAL | " + resp.data.error);
+        alert('GAGAL | ' + resp.data.error)
+        // cogoToast.warning("GAGAL | " + resp.data.error);
       }
     })
     .catch(err => {
@@ -180,6 +190,10 @@ export default function FormRegister() {
 
 
   const handleNext = () => {
+    // console.log(activeStep);
+    if (activeStep == (steps.length-1)){
+      handleSubmit();
+    }
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
@@ -220,6 +234,7 @@ export default function FormRegister() {
         height="80px"
       />
 
+      <form>
       <Stepper activeStep={activeStep} orientation="vertical">
         {steps.map((label, index) => (
           <Step key={label}>
@@ -421,11 +436,12 @@ export default function FormRegister() {
                          />
                          </div>
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={12}
+                  mb={'40px'}>
                   <Button 
                     onClick={clearCanvas}
                     variant="contained"
-                    color="secondary"
+                    // color="secondary"
                   >
                         Clear
                   </Button>
@@ -446,6 +462,8 @@ export default function FormRegister() {
                     disabled={activeStep === 0}
                     onClick={handleBack}
                     className={classes.button}
+                    variant="contained"
+                    color="secondary"
                   >
                     Back
                   </Button>
@@ -463,14 +481,17 @@ export default function FormRegister() {
           </Step>
         ))}
       </Stepper>
+      {/* {activeStep === steps.length? handleSubmit:null} */}
       {activeStep === steps.length && (
+        // {{handleSubmit}}
         <Paper square elevation={0} className={classes.resetContainer}>
-          <Typography>All steps completed - you&apos;re finished</Typography>
-          <Button onClick={handleReset} className={classes.button}>
+          <Typography>Selamat anda telah mengisi data diri untuk pengajuan WMS!</Typography>
+          {/* <Button onClick={handleReset} className={classes.button}>
             Reset
-          </Button>
+          </Button> */}
         </Paper>
       )}
+      </form>
     </div>
   );
 }
