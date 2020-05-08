@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect  } from 'react';
 // import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -26,6 +26,12 @@ import Paper from '@material-ui/core/Paper';
 import {SketchField, Tools} from 'react-sketch';
 import ImageUploader from "react-images-upload";
 import queryString from 'query-string';
+import {
+  BrowserRouter as Router, 
+  Link,
+  useLocation,
+  useHistory 
+} from "react-router-dom";
 
 
 
@@ -49,6 +55,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function FormRegister() {
   const classes = useStyles();
+  const history = useHistory();
+  let data = useLocation();
   const [initZoom, setInitZoom] = useState(6);
   const [initCoordinate,setInitCoordinate] = useState([-7.471410908357826,113.20312500000001]);
   const [name, setName] = useState("");
@@ -98,18 +106,21 @@ export default function FormRegister() {
   const [coordinate , setCoordinate ] = useState(initCoordinate);
   const [pictureIdentity, setPictureIdentity] = useState([]);
   const [pictureSelfie, setPictureSelfie] = useState([]);
-  const url = this.props.location.search;
-  const params = queryString.parse(url);
-  console.log(params);
+  
+  useEffect(() => {
+      if (!data['data']){
+        history.push('/');
+      }
+  });
 
   const onDropPictureIdentity = pictureIdentity => {
     setPictureIdentity([...pictureIdentity, pictureIdentity]);
-    console.log(pictureIdentity);
+    // console.log(pictureIdentity);
   };
 
   const onDropPictureSelfie = pictureSelfie => {
     setPictureSelfie([...pictureSelfie, pictureSelfie]);
-    console.log(pictureIdentity);
+    // console.log(pictureIdentity);
   };
   const handleTooltipClose = () => {
     setOpen(false);

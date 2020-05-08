@@ -12,6 +12,8 @@ import SignUp from "./components/SignUp";
 import Footer from './components/Footer';
 import FormRegister from "./components/FormRegister";
 import TryMap from './components/TryMap';
+import Page404 from './components/Page404';
+import Login from './components/Login';
 
 
 function App() {
@@ -19,9 +21,9 @@ function App() {
     <Router>
           <Switch>
             <Route exact path="/">
-              <Pricing />
+              <Login />
             </Route>
-            <Route path="/landing">
+            <Route path="/landingpage">
               <Pricing />
             </Route>
             <Route path="/pricing">
@@ -35,6 +37,9 @@ function App() {
             </Route>
             <Route path="/map">
               <TryMap />
+            </Route>
+            <Route path="/page404">
+              <Page404 />
             </Route>
           </Switch>
 

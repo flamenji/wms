@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
       width : '100%',
       boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
       borderTop: `1px solid ${theme.palette.divider}`,
-      marginTop: theme.spacing(8),
+      // marginTop: theme.spacing(8),
       paddingTop: theme.spacing(1),
       paddingBottom: theme.spacing(1),
       paddingRight: theme.spacing(1),

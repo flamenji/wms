@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 // import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
@@ -12,22 +12,17 @@ import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import {
+    BrowserRouter as Router, 
     Link,
-    useLocation
+    useLocation,
+    useHistory 
   } from "react-router-dom";
 import { toast } from 'react-toastify';
 import LogoWMS from '../static/image/logo.svg';
-// import { useParams } from "react-router";
 
-// function useQuery() {
-//   return new URLSearchParams(useLocation().search);
-// }
-
-const queryString = require('query-string');
-
-var parsed = queryString.parse(this.props.location.search);
-console.log(parsed.param); // replace param with your own 
-
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
 
 const useStyles = makeStyles((theme) => ({
   '@global': {
@@ -164,14 +159,28 @@ const tiers = [
 ];
 
 export default function Pricing() {
+  let query = useQuery();
+  const history = useHistory();
   const classes = useStyles();
-  const [paket, setPaket] = useState({});
+  // const [package, setPackage] = useState({});
+  const [data, setData] = useState({
+                    'package' : '', 
+                    'cid' : query.get("id")
+                  });
+  const [cid, setCid] = useState(query.get("cid"));
   // let params = useParams();
-  console.log(URLSearchParams(useLocation().search));
+  // console.log(URLSearchParams(useLocation().search));
+  console.log(query.get("cid"));
+  useEffect(() => {
+    // document.title = `You clicked ${count} times`;
+      if (!query.get("cid")){
+        history.push('/page404');
+      }
+  });
+
 
 
   function handleClickPackage(paket){
-      setPaket(paket);
       toast.success("Anda telah memlilih " + paket.name, {
         position: toast.POSITION.TOP_CENTER
       });
@@ -181,7 +190,7 @@ export default function Pricing() {
 
   return (
     <React.Fragment>
-      
+
       <Container maxWidth="sm" component="main" className={classes.heroContent}>
       <img 
         width="130px"
@@ -234,13 +243,15 @@ export default function Pricing() {
                 <CardActions className={classes.cardButtonSection}>
                     <Link to={{
                               pathname: '/form',
-                              data : paket,
+                              data : {"packageId" : tier.id, "cid" : cid},
                             }}
                           style={{ textDecoration: 'none' }}>
                         <Button className={classes.cardButton}
                                 variant="outlined"
                                 onClick={() => {
-                                            handleClickPackage({"id" : tier.id, "name" : tier.title})
+                                            handleClickPackage({
+                                                                "id" : tier.id, 
+                                                                "name" : tier.title})
                                           }
                                         }
                           >
