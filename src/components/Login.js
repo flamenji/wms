@@ -21,6 +21,8 @@ import {
 import LogoWMS from '../static/image/logo.svg';
 import axios from 'axios';
 import cogoToast from 'cogo-toast';
+import { useCookies } from 'react-cookie';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -59,33 +61,66 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignInSide() {
   const classes = useStyles();
-  const [canvasserId, setCanvasserId] = useState("");
-  const [password, setPassword] = useState("");
+  const [canvasserId, setCanvasserId] = useState("DPR002");
+  const [password, setPassword] = useState("canvasserTREG5");
+  const [info, setInfo] = useState("");
+  const history = useHistory();
 
-  function handleSubmit(){
-    // e.preventDefault();
+  function handleSubmit(e){
+    e.preventDefault();
+    // cogoToast.info("!!!!!!!!!!!");
     const data = new FormData() 
-    data.append('canvasser_id' , canvasserId)
-    data.append('password', password)
-    console.log(data);
+      data.append('canvasser_id' , canvasserId)
+      data.append('password', password)
+    // console.log(data);
+    var warning = ""
+    if (canvasserId.length == 0){
+      warning += 'Username kosong '
+      // cogoToast.warn('Username kosong')
+      // return
+    }
+    if (password.length == 0){
+      warning += 'Password kosong'
+      // cogoToast.warn('Password kosong')
+      // return
+    }
+    if (warning != ""){
+      setInfo(warning)
+      // cogoToast.warn(warning)
+      return
+    }
 
     axios
-    .post('http://localhost:5000/login', data)
+    .post('https://192.168.1.6:8443/login', data)
+    // .withCredentials()   
+    // .post('http://localhost:5000/login', data)
     .then(resp => {
       console.log(resp.data);
-      if (resp.data.message === "BERHASIL"){
+      if (resp.data.message === true){
+        // console.table(resp)
         // alert(resp.data.message);  
-        cogoToast.success("BERHASIL INPUT dengan ID : " + resp.data.id);
+        // setCookie(resp)
+        cogoToast.success("Sign In Success!");
+        history.push('/home');
       }
       else{
-        alert('GAGAL | ' + resp.data.error)
-        // cogoToast.warning("GAGAL | " + resp.data.error);
+        setInfo("Failed to sign in. " + resp.data.error)
+        // alert('GAGAL | ' + resp.data.error)
+        // cogoToast.warn("Failed to sign in. " + resp.data.error);
+        // setCanvasserId("");
+        // setPassword("");
       }
+      // return
     })
     .catch(err => {
       console.error(err);
+      setInfo("something happens!")
+      // cogoToast(err)
+      // return
     });
+    // cogoToast.warn("Canvasser ID dan Password kosong");
   }
+    
 
   return (
     <Grid container component="main" className={classes.root}>
@@ -106,6 +141,12 @@ export default function SignInSide() {
           <Typography component="h3" variant="h5">
             Sign in
           </Typography>
+          {/* <Typography> */}
+          <div>
+            {info}
+          </div>
+            
+          {/* </Typography> */}
           <form className={classes.form} noValidate>
             <TextField
               variant="outlined"
@@ -138,7 +179,7 @@ export default function SignInSide() {
               color="primary"
               className={classes.submit}
               onClick={handleSubmit}
-            >
+              >
               Sign In
             </Button>
           

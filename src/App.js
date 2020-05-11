@@ -14,9 +14,13 @@ import FormRegister from "./components/FormRegister";
 import TryMap from './components/TryMap';
 import Page404 from './components/Page404';
 import Login from './components/Login';
+import Home from './components/Home';
+import { useCookies } from 'react-cookie';
 
 
 function App() {
+    const [cookies, setCookie] = useCookies();
+
   return (
     <Router>
           <Switch>
@@ -34,6 +38,9 @@ function App() {
             </Route>
             <Route path="/form">
               <FormRegister />
+            </Route>
+            <Route path="/home">
+              <Home />
             </Route>
             <Route path="/map">
               <TryMap />
