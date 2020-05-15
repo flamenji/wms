@@ -20,8 +20,10 @@ import {
   } from "react-router-dom";
 import LogoWMS from '../static/image/logo.svg';
 import axios from 'axios';
+// import fetch from 'fetch';
 import cogoToast from 'cogo-toast';
 import { useCookies } from 'react-cookie';
+import JSCookies from 'js-cookie';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -65,6 +67,8 @@ export default function SignInSide() {
   const [password, setPassword] = useState("canvasserTREG5");
   const [info, setInfo] = useState("");
   const history = useHistory();
+  const [cookies, setCookie, removeCookie] = useCookies('');
+
 
   function handleSubmit(e){
     e.preventDefault();
@@ -89,36 +93,31 @@ export default function SignInSide() {
       // cogoToast.warn(warning)
       return
     }
+    // console.log(data['canvasser_id'])
+    var setCookie = require('set-cookie-parser');
+
 
     axios
-    .post('https://192.168.1.6:8443/login', data)
-    // .withCredentials()   
-    // .post('http://localhost:5000/login', data)
+    .post('https://192.168.1.6:8443/login', 
+    // .post('https://localhost:8443/login', 
+      data, 
+      {withCredentials: true,
+        headers: { 
+          crossDomain: true, 
+          'Content-Type': 'application/json' }
+     })
     .then(resp => {
-      console.log(resp.data);
-      if (resp.data.message === true){
-        // console.table(resp)
-        // alert(resp.data.message);  
-        // setCookie(resp)
-        cogoToast.success("Sign In Success!");
+      // console.log(resp.headers);
+        console.table(document.cookie)
         history.push('/home');
-      }
-      else{
-        setInfo("Failed to sign in. " + resp.data.error)
-        // alert('GAGAL | ' + resp.data.error)
-        // cogoToast.warn("Failed to sign in. " + resp.data.error);
-        // setCanvasserId("");
-        // setPassword("");
-      }
-      // return
+        cogoToast.success('Login Success!')
     })
-    .catch(err => {
-      console.error(err);
-      setInfo("something happens!")
-      // cogoToast(err)
-      // return
-    });
-    // cogoToast.warn("Canvasser ID dan Password kosong");
+    .catch(function (error) {
+      // console.log(error);
+      alert(error)
+      setInfo("SOMETHING HAPPENING")
+      // setInfo(error.toString())
+    })
   }
     
 

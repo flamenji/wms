@@ -11,6 +11,8 @@
     "axios": "^0.19.2",
     "chakra-ui": "^0.3.9",
     "cogo-toast": "^4.2.3",
+    "fetch": "^1.1.0",
+    "js-cookie": "^2.2.1",
     "leaflet": "^1.6.0",
     "material-ui": "^0.20.2",
     "node-gyp": "^6.1.0",
@@ -25,7 +27,8 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.1",
     "react-sketch": "^0.5.1",
-    "react-toastify": "^6.0.0-rc.2-1"
+    "react-toastify": "^6.0.0-rc.2-1",
+    "set-cookie-parser": "^2.4.5"
   },
   "scripts": {
     "start": "HTTPS=true react-scripts start",

@@ -16,6 +16,8 @@ import Page404 from './components/Page404';
 import Login from './components/Login';
 import Home from './components/Home';
 import { useCookies } from 'react-cookie';
+import AppBar from './components/AppBar'
+import NavBar from './components/NavBar'
 
 
 function App() {
@@ -40,6 +42,7 @@ function App() {
               <FormRegister />
             </Route>
             <Route path="/home">
+              <AppBar />
               <Home />
             </Route>
             <Route path="/map">
